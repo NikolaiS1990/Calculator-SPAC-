@@ -1,11 +1,12 @@
 # Calculator-SPAC-
 
 ## Description
-
 This an assignment about making a calculator app
 
+## How install and run
+Read the uv_guide.md in the docs dir
 
-# Over all file structure
+## Over all file structure
 ```text
 .
 ├── docs

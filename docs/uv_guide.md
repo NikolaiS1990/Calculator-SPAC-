@@ -1,3 +1,7 @@
+# Install uv
+unix based OS: `curl -LsSf https://astral.sh/uv/install.sh | sh`.
+Windows: `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex`.
+
 # Setup up
 ```bash
 uv init --name Calculator
@@ -9,8 +13,14 @@ uv venv --python 3.14
 ```
 
 # Activate the virtual environment
+unix
 ```bash
 source .venv/bin/activate
+```
+
+Windows:
+```PS
+.venv\Scripts\activate
 ```
 
 # Deactivate the virtual environment
