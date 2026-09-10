@@ -1,11 +1,12 @@
 """
 A simple command-line calculator module.
 This module provides the `Calculator` class, which handles user input validation
-for two numbers and an arithmetic operator (+, -, *, /), performs the calculation,
+performs the calculation (subtraction, addition, multiplication, divide, power and square root)
 and outputs the result. It supports decimal inputs using either '.' or ',' as the
 decimal separator.
 """
 
+import math
 import operator
 import os
 import sys
@@ -22,7 +23,7 @@ class Calculator:
     Attributes:
         first_number (float): The first operand for the calculation.
         second_number (float): The second operand for the calculation.
-        operator (str): The arithmetic operator ('+', '-', '*', '/').
+        operator (str): The arithmetic operator ('+', '-', '*', '/', '**', sqrt).
     """
 
     first_number: float = 0
@@ -37,7 +38,7 @@ class Calculator:
 
         Display usage instructions to the user with formatted text.
         Prints a multi-line string explaining how to input numbers, select operators
-        (+, -, *, /), and exit the application by typing 'q'. Uses ANSI escape codes
+        (+, -, *, /, ** or sqrt), and exit the application by typing 'q'. Uses ANSI escape codes
         for bold formatting.
         """
 
@@ -47,9 +48,11 @@ class Calculator:
         print(
             "How to use:\n\n"
             "\t1. select a number, it can be integer or decimal\n"
-            f"\t2. select an operator, it can be {BOLD_START}+, {BOLD_START}-{END},"
-            f"{BOLD_START}*{END} or {BOLD_START}/{END}\n"
-            "\t3. select the next number, which also can be an integer or a decimal.\n"
+            f"\t2. select an operator, it can be {BOLD_START}+, {BOLD_START}-{END}, "
+            f"\t{BOLD_START}*{END}, {BOLD_START}/{END}, {BOLD_START}**{END} or "
+            f"{BOLD_START}sqrt{END}\n"
+            "\t3. If you did not chose sqrt or power,\n"
+            "\tselect the next number, which also can be an integer or a decimal.\n"
             f"\tYou can type {BOLD_START}q{END} to exit the app.\n"
         )
 
@@ -59,7 +62,7 @@ class Calculator:
 
         Validates that inputs are provided, converts comma decimals to periods,
         ensures numbers are valid floats, and restricts the operator to '+', '-',
-        '*', or '/'.
+        '*', '/', '**', 'sqrt'.
         
         Allows the user to exit the application by typing 'q' at any
         input prompt, which sets `cls.run` to False. Exits with an error message if
@@ -106,8 +109,8 @@ class Calculator:
             print("Error: operator is missing")
             sys.exit(1)
 
-        if user_selected_operator not in ("+", "-", "*", "/"):
-            print('Error: Select between "+", "-", "*", "/"')
+        if user_selected_operator not in ("+", "-", "*", "/", "**", "sqrt"):
+            print('Error: Select between "+", "-", "*", "/"', "**", "sqrt")
             sys.exit(1)
 
         try:
@@ -115,6 +118,10 @@ class Calculator:
         except ValueError as e:
             print(f"Validation failed ({e})")
             sys.exit(1)
+
+        # If sqrt we do not need a second number
+        if cls.selected_operator == "sqrt":
+            return
 
         # Validating second number
         second_number = input("Type your second number: ")
@@ -154,17 +161,21 @@ class Calculator:
             "+": operator.add,
             "-": operator.sub,
             "*": operator.mul,
-            "/": operator.truediv
+            "/": operator.truediv,
+            "**": operator.pow
         }
+
+        if cls.selected_operator == "sqrt":
+            result = math.sqrt(cls.first_number)
+            return float(result)
+
 
         if cls.selected_operator == "/" and cls.first_number == 0.0 or cls.second_number == 0:
             print("Error: Can't devide by 0")
             sys.exit(1)
 
         op_func = operations[cls.selected_operator]
-
         result = op_func(cls.first_number, cls.second_number)
-
         return float(result)
 
 
@@ -174,7 +185,7 @@ class Calculator:
         Orchestrate the calculator workflow.
         Calls `set_user_input` to gather and validate data, then calls `calculator`.
 
-        If the user enters 'q' during input, the loop terminates gracefully.
+        If the user enters 'q' during input, the loop terminates gracefully.W
         Otherwise, it computes the result, prints it, and waits before repeating.
         """
 
