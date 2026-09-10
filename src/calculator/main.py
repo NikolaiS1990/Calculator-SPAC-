@@ -70,7 +70,7 @@ class Calculator:
             cls.second_number (float): The validated second number.
             cls.selected_operator (str): The validated operator.
             cls.run (bool): Set to False if the user chooses to exit.
-        ""
+        """
 
         # Validating first number
         first_number = input("Type your first number: ")
