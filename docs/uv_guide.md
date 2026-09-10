@@ -53,3 +53,8 @@ dev packages:
 ```bash
 uv remove --dev <package name>
 ```
+
+# Check types
+```bash
+uv run mypy src/
+```
