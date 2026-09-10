@@ -6,8 +6,10 @@ and outputs the result. It supports decimal inputs using either '.' or ',' as th
 decimal separator.
 """
 
-import sys
 import operator
+import os
+import sys
+import time
 
 class Calculator:
     """Class which holds all the methods.
@@ -25,24 +27,58 @@ class Calculator:
 
     first_number: float = 0
     second_number: float = 0
-    operator: str = ""
+    selected_operator: str = ""
+    run: bool = True
+
+
+    @classmethod
+    def instructions(cls) -> None:
+        """Formats and prints user instructions.
+
+        Display usage instructions to the user with formatted text.
+        Prints a multi-line string explaining how to input numbers, select operators
+        (+, -, *, /), and exit the application by typing 'q'. Uses ANSI escape codes
+        for bold formatting.
+        """
+
+        BOLD_START = "\033[1m"
+        END = "\033[0m"
+
+        print(
+            "How to use:\n\n"
+            "\t1. select a number, it can be integer or decimal\n"
+            f"\t2. select an operator, it can be {BOLD_START}+, {BOLD_START}-{END},"
+            f"{BOLD_START}*{END} or {BOLD_START}/{END}\n"
+            "\t3. select the next number, which also can be an integer or a decimal.\n"
+            f"\tYou can type {BOLD_START}q{END} to exit the app.\n"
+        )
 
     @classmethod
     def set_user_input(cls) -> None:
-        """Prompting the user, validating and setting the user inputs.
+        """Prompt the user for two numbers and an arithmetic operator.
 
-        Prompt the user for two numbers and an arithmetic operator.
         Validates that inputs are provided, converts comma decimals to periods,
         ensures numbers are valid floats, and restricts the operator to '+', '-',
-        '*', or '/'. Exits with an error message if validation fails.
+        '*', or '/'.
+        
+        Allows the user to exit the application by typing 'q' at any
+        input prompt, which sets `cls.run` to False. Exits with an error message if
+        validation fails for non-exit inputs.
+        
         Updates:
             cls.first_number (float): The validated first number.
             cls.second_number (float): The validated second number.
-            cls.operator (str): The validated operator.
-        """
+            cls.selected_operator (str): The validated operator.
+            cls.run (bool): Set to False if the user chooses to exit.
+        ""
 
         # Validating first number
         first_number = input("Type your first number: ")
+
+        if first_number.lower() == "q":
+            cls.run = False
+            print("Closing the app...")
+            return
 
         if not first_number:
             print("Error: first number is missing")
@@ -61,6 +97,11 @@ class Calculator:
         # Validating operator
         user_selected_operator = input("Type an operator: ")
 
+        if user_selected_operator.lower() == "q":
+            cls.run = False
+            print("Closing the app...")
+            return
+
         if not user_selected_operator:
             print("Error: operator is missing")
             sys.exit(1)
@@ -70,13 +111,18 @@ class Calculator:
             sys.exit(1)
 
         try:
-            cls.operator = user_selected_operator
+            cls.selected_operator = user_selected_operator
         except ValueError as e:
             print(f"Validation failed ({e})")
             sys.exit(1)
 
         # Validating second number
         second_number = input("Type your second number: ")
+
+        if second_number.lower() == "q":
+            cls.run = False
+            print("Closing the app...")
+            return
 
         if "," in second_number:
             second_number = second_number.replace(",", ".")
@@ -111,11 +157,11 @@ class Calculator:
             "/": operator.truediv
         }
 
-        if cls.operator == "/" and cls.first_number == 0.0 or cls.second_number == 0:
+        if cls.selected_operator == "/" and cls.first_number == 0.0 or cls.second_number == 0:
             print("Error: Can't devide by 0")
             sys.exit(1)
 
-        op_func = operations[cls.operator]
+        op_func = operations[cls.selected_operator]
 
         result = op_func(cls.first_number, cls.second_number)
 
@@ -126,13 +172,24 @@ class Calculator:
     def run_calculator(cls) -> None:
         """
         Orchestrate the calculator workflow.
-        Calls `set_user_input` to gather and validate data, then calls `calculator`
-        to compute the result and prints it to the console.
-        """
-        cls.set_user_input()
-        result = cls.calculator()
+        Calls `set_user_input` to gather and validate data, then calls `calculator`.
 
-        print(result)
+        If the user enters 'q' during input, the loop terminates gracefully.
+        Otherwise, it computes the result, prints it, and waits before repeating.
+        """
+
+        while cls.run is True:
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+            cls.instructions()
+            cls.set_user_input()
+
+            if not cls.run:
+                break
+
+            result = cls.calculator()
+            print(result)
+            time.sleep(3)
 
 
 if __name__ == "__main__":

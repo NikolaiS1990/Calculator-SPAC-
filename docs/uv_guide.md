@@ -58,3 +58,8 @@ uv remove --dev <package name>
 ```bash
 uv run mypy src/
 ```
+
+# Run linting
+```bash
+uv run pylint src/
+```
