@@ -7,7 +7,10 @@ authors = [
     { name = "Nikolai Sandbeck", email = "sandbeck1990@protonmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "mypy>=2.3.1",
+    "typing>=3.10.0.0",
+]
 
 [project.scripts]
 calculator = "calculator:main"
@@ -15,3 +18,12 @@ calculator = "calculator:main"
 [build-system]
 requires = ["uv_build>=0.12.12,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pylint>=4.0.8",
+]
+
+[tool.mypy]
+strict = true
+plugins = []
