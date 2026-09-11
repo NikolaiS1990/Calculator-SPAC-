@@ -1,14 +1,14 @@
-"""
-A simple command-line calculator module.
-This module provides the `Calculator` class, which handles user input validation
-performs the calculation (subtraction, addition, multiplication, divide, power and square root)
-and outputs the result. It supports decimal inputs using either '.' or ',' as the
-decimal separator.
+"""A simple command-line calculator module.
+This module provides the `Calculator` class, which handles user input validation,
+performs arithmetic calculations (addition, subtraction, multiplication, division,
+power, and square root), and outputs the result. It supports decimal inputs using
+either '.' or ',' as the decimal separator.
 """
 
 import math
 import operator
 import os
+from subprocess import call
 import sys
 import time
 
@@ -20,11 +20,14 @@ class Calculator:
     and the selected operator. It provides methods to validate user input,
     perform arithmetic operations using the `operator` module, and run the
     calculation flow.
+
     Attributes:
         first_number (float): The first operand for the calculation.
         second_number (float): The second operand for the calculation.
-        operator (str): The arithmetic operator ('+', '-', '*', '/', '**', sqrt).
+        selected_operator (str): The arithmetic operator ('+', '-', '*', '/', '**', 'sqrt').
+        run (bool): The state which determines if the app should run or not.
     """
+
 
     first_number: float = 0
     second_number: float = 0
@@ -59,20 +62,20 @@ class Calculator:
     @classmethod
     def set_user_input(cls) -> None:
         """Prompt the user for two numbers and an arithmetic operator.
-
         Validates that inputs are provided, converts comma decimals to periods,
         ensures numbers are valid floats, and restricts the operator to '+', '-',
-        '*', '/', '**', 'sqrt'.
-        
+        '*', '/', '**', or 'sqrt'.
         Allows the user to exit the application by typing 'q' at any
         input prompt, which sets `cls.run` to False. Exits with an error message if
         validation fails for non-exit inputs.
-        
         Updates:
             cls.first_number (float): The validated first number.
             cls.second_number (float): The validated second number.
             cls.selected_operator (str): The validated operator.
             cls.run (bool): Set to False if the user chooses to exit.
+
+        Raises:
+            SystemExit: If invalid inputs are given, it exits the app.
         """
 
         # Validating first number
@@ -147,12 +150,13 @@ class Calculator:
     @classmethod
     def calculator(cls) -> float:
         """Performs the calculation.
-
         Perform the arithmetic operation based on the stored operator and numbers.
         Uses the `operator` module to execute addition, subtraction, multiplication,
         or true division. Checks for division by zero before executing.
+        
         Returns:
             float: The result of the calculation.
+            
         Raises:
             SystemExit: If division by zero is attempted.
         """
@@ -181,16 +185,15 @@ class Calculator:
 
     @classmethod
     def run_calculator(cls) -> None:
-        """
-        Orchestrate the calculator workflow.
-        Calls `set_user_input` to gather and validate data, then calls `calculator`.
+        """Orchestrates the calculator workflow.
 
-        If the user enters 'q' during input, the loop terminates gracefully.W
+        Calls `set_user_input` to gather and validate data, then calls `calculator`.
+        If the user enters 'q' during input, the loop terminates gracefully.
         Otherwise, it computes the result, prints it, and waits before repeating.
         """
 
         while cls.run is True:
-            os.system('cls' if os.name == 'nt' else 'clear')
+            call('cls' if os.name == 'nt' else 'clear')
 
             cls.instructions()
             cls.set_user_input()
