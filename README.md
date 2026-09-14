@@ -1,7 +1,7 @@
 # Calculator-SPAC-
 
 ## Description
-This an assignment about making a calculator app
+This is an assignment from Specialisterne academy. The goal was to make a calculator app.
 
 ## How install and run
 Read the uv_guide.md in the docs dir
